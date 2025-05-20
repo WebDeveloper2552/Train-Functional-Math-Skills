@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container {
+            width: 420px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+            transition: box-shadow 0.3s;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            background: #eee;
+            padding: 0;
+        }
+        .info-item .btn {
+            flex: 1;
+            padding: 16px 0;
+            border: none;
+            background: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .info-item .btn.active,
+        .info-item .btn:hover {
+            background: #fff;
+            color: #0078d7;
+        }
+        .container-form {
+            position: relative;
+            height: 390px;
+        }
+        .form-panel {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            transform: translateX(40px) scale(0.98);
+            transition: opacity 0.5s, transform 0.5s;
+            pointer-events: none;
+            padding: 30px 30px 10px 30px;
+            box-sizing: border-box;
+        }
+        .form-panel.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: auto;
+            z-index: 1;
+        }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 8px; box-sizing: border-box; }
+        .error { color: red; font-size: 0.9em; min-height: 18px; }
+        button[type="submit"], .container-form .btn {
+            padding: 10px 20px; border: none; background: #0078d7; color: #fff; border-radius: 4px; cursor: pointer; font-size: 1em;
+        }
+        button[type="submit"]:hover, .container-form .btn:hover { background: #005fa3; }
+        /* Animation logic */
+        .container.log-in .form-panel.teacher-panel { opacity: 0; pointer-events: none; transform: translateX(-40px) scale(0.98);}
+        .container.log-in .form-panel.student-panel { opacity: 1; pointer-events: auto; transform: translateX(0) scale(1);}
+        .container:not(.log-in) .form-panel.teacher-panel { opacity: 1; pointer-events: auto; transform: translateX(0) scale(1);}
+        .container:not(.log-in) .form-panel.student-panel { opacity: 0; pointer-events: none; transform: translateX(40px) scale(0.98);}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-item">
+            <button class="btn teacher-btn active" type="button">Teacher Sign Up</button>
+            <button class="btn student-btn" type="button">Student Sign Up</button>
+        </div>
+        <div class="container-form">
+            <!-- Teacher Sign Up Form -->
+            <form class="form-panel teacher-panel active" id="teacherForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="teacherSchool">School</label>
+                    <input type="text" id="teacherSchool" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherUsername">Username</label>
+                    <input type="text" id="teacherUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherEmail">Email</label>
+                    <input type="email" id="teacherEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherPassword">Password</label>
+                    <input type="password" id="teacherPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherConfirmPassword">Confirm Password</label>
+                    <input type="password" id="teacherConfirmPassword" required>
+                </div>
+                <div class="error" id="teacherError"></div>
+                <button type="submit">Sign Up as Teacher</button>
+            </form>
+            <!-- Student Sign Up Form -->
+            <form class="form-panel student-panel" id="studentForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="studentEmail">Email</label>
+                    <input type="email" id="studentEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentUsername">Username</label>
+                    <input type="text" id="studentUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentPassword">Password</label>
+                    <input type="password" id="studentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentConfirmPassword">Confirm Password</label>
+                    <input type="password" id="studentConfirmPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherCode">Teacher Code</label>
+                    <input type="text" id="teacherCode" required>
+                </div>
+                <div class="error" id="studentError"></div>
+                <button type="submit">Sign Up as Student</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Toggle animation logic using your prompt
+        $(".info-item .btn").click(function(){
+            $(".info-item .btn").removeClass("active");
+            $(this).addClass("active");
+            $(".container").toggleClass("log-in", $(this).hasClass("student-btn"));
+        });
+
+        $(".container-form .btn").click(function(){
+            $(".container").addClass("active");
+        });
+
+        function validatePassword(password) {
+            // At least 8 chars, 1 lowercase, 1 symbol, 1 number
+            return /^(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+        }
+
+        $("#teacherForm").on("submit", function(e) {
+            e.preventDefault();
+            const password = $("#teacherPassword").val();
+            const confirm = $("#teacherConfirmPassword").val();
+            const errorDiv = $("#teacherError");
+            errorDiv.text("");
+            if (!validatePassword(password)) {
+                errorDiv.text('Password must be at least 8 characters, include a lowercase letter, a symbol, and a number.');
+                return;
+            }
+            if (password !== confirm) {
+                errorDiv.text('Passwords do not match.');
+                return;
+            }
+            alert('Teacher signed up successfully!');
+            // Submit to backend here
+        });
+
+        $("#studentForm").on("submit", function(e) {
+            e.preventDefault();
+            const password = $("#studentPassword").val();
+            const confirm = $("#studentConfirmPassword").val();
+            const code = $("#teacherCode").val();
+            const errorDiv = $("#studentError");
+            errorDiv.text("");
+            if (!validatePassword(password)) {
+                errorDiv.text('Password must be at least 8 characters, include a lowercase letter, a symbol, and a number.');
+                return;
+            }
+            if (password !== confirm) {
+                errorDiv.text('Passwords do not match.');
+                return;
+            }
+            if (!code.trim()) {
+                errorDiv.text('Teacher code is required.');
+                return;
+            }
+            alert('Student signed up successfully!');
+            // Submit to backend here
+        });
+    </script>
+</body>
+</html>
