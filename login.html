@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - QuickQuiz Classroom</title>
+    <link href="https://fonts.googleapis.com/css?family=Oswald|Roboto" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2c82c9;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            background: url('http://wallpaper-gallery.net/images/wallpapers-hd-pictures/wallpapers-hd-pictures-10.jpg') no-repeat center center;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: auto;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .form-container.hidden {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .form-container.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--primary-blue);
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: darkblue;
+        }
+
+        .home-button {
+            width: auto;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .info-item {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .info-item .btn {
+            cursor: pointer;
+            color: var(--primary-blue);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="login-container">
+        <div class="form-container active" id="student-login">
+            <h2>Student Login</h2>
+            <form id="student-login-form">
+                <input type="email" id="student-email" placeholder="Student Email" required>
+                <input type="password" id="student-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <div class="info-item">
+                <p>Don't have an account?</p>
+                <div class="btn" id="toggle-to-teacher">Log in as Teacher</div>
+            </div>
+        </div>
+
+        <div class="form-container hidden" id="teacher-login">
+            <h2>Teacher Login</h2>
+            <form id="teacher-login-form">
+                <input type="email" id="teacher-email" placeholder="Teacher Email" required>
+                <input type="password" id="teacher-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <div class="info-item">
+                <p>Have an account?</p>
+                <div class="btn" id="toggle-to-student">Log in as Student</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="home-button" onclick="location.href='index.html'">Home</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#student-login-form').on('submit', function (event) {
+            event.preventDefault();
+            var email = $('#student-email').val();
+            var password = $('#student-password').val();
+            var studentRegex = /^\d{7}@students\.[a-z]\.ac\.uk$/;
+
+            if (studentRegex.test(email)) {
+                alert('Student login successful!');
+            } else {
+                alert('Invalid email format.');
+            }
+        });
+
+        $('#teacher-login-form').on('submit', function (event) {
+            event.preventDefault();
+            var email = $('#teacher-email').val();
+            var password = $('#teacher-password').val();
+            var teacherRegex = /^[a-z]+\.[a-z]+@[a-z]\.ac\.uk$/;
+
+            if (teacherRegex.test(email)) {
+                alert('Teacher login successful!');
+            } else {
+                alert('Invalid email format.');
+            }
+        });
+
+        $('#toggle-to-teacher').click(function() {
+            $('#student-login').removeClass('active').addClass('hidden');
+            $('#teacher-login').removeClass('hidden').addClass('active');
+        });
+
+        $('#toggle-to-student').click(function() {
+            $('#teacher-login').removeClass('active').addClass('hidden');
+            $('#student-login').removeClass('hidden').addClass('active');
+        });
+    </script>
+</body>
+</html>
